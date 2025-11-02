@@ -1,0 +1,11 @@
+# Python environment and cache files
+__pycache__/
+*.pyc
+dietmate_env/
+
+# OS files
+.DS_Store
+
+# Flask temporary folders (업로드/결과 이미지는 용량이 크므로 제외)
+static/uploads/
+static/results/

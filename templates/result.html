@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>분석 결과 - 식단 도우미</title>
+    <style>
+        /* 폰트 및 기본 설정 */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            margin: 0; 
+            padding: 40px 0;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { 
+            color: #2e7d32; /* 짙은 녹색 */
+            text-align: center; 
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        /* 메인 컨텐츠 영역 */
+        .result-container { 
+            display: flex; 
+            gap: 30px; /* 섹션 간 간격 */
+            margin-top: 20px;
+        }
+        
+        /* 카드 스타일 (섹션 구분) */
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            flex: 1;
+        }
+
+        /* 이미지 박스 스타일 */
+        .image-box {
+            flex: 2; /* 이미지를 더 넓게 */
+        }
+        .image-box img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 요약 박스 스타일 */
+        .summary-box {
+            flex: 1; /* 요약을 적당히 좁게 */
+        }
+        
+        /* 제목 스타일 */
+        .card h2 { 
+            color: #388e3c; /* 중간 녹색 */
+            border-bottom: 3px solid #e0e0e0; 
+            padding-bottom: 10px; 
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        
+        /* 총 칼로리 하이라이트 */
+        .total-calorie-wrap {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #e8f5e9; /* 연한 녹색 배경 */
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .total-calorie { 
+            font-size: 3em; 
+            color: #d32f2f; /* 강렬한 빨간색 */
+            font-weight: 700; 
+            line-height: 1;
+        }
+        .total-calorie-label {
+            font-size: 1em;
+            color: #555;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        /* 테이블 스타일 */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            font-size: 0.9em;
+        }
+        th, td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #f0f0f0; 
+        }
+        th { 
+            background-color: #f1f8e9; /* 테이블 헤더 연한 녹색 */
+            color: #333;
+            font-weight: 600;
+        }
+        tbody tr:hover {
+            background-color: #e8f5e9;
+        }
+
+        /* 버튼 스타일 */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .back-link a:hover {
+            background-color: #388e3c;
+        }
+
+        /* 추가 정보 */
+        .note {
+            margin-top: 15px;
+            font-size: 0.8em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>분석 결과</h1>
+        
+        <div class="result-container">
+            
+            <div class="card image-box">
+                <h2>인식된 이미지 (YOLOv8)</h2>
+                <img src="{{ result_image }}" alt="분석 결과 이미지">
+
+            </div>
+            
+            <div class="card summary-box">
+                <h2>칼로리 요약</h2>
+                
+                <div class="total-calorie-wrap">
+                    <span class="total-calorie-label">총 인식된 칼로리 합계</span>
+                    <div class="total-calorie">{{ total_calorie }} <span style="font-size: 0.6em;">kcal</span></div>
+                </div>
+                
+                <h2>🔍 탐지된 음식 상세 정보</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>음식 이름</th>
+                            <th>개수</th>
+                            <th>단위 칼로리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, detail in food_details.items() %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>{{ detail.count }}</td>
+                            <td>{{ detail.calorie }} kcal</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <div class="back-link">
+                    <a href="{{ url_for('index') }}">다른 식단 분석하기</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>식단 도우미 (DietMate)</title>
+    <style> 
+        /* 폰트 및 배경 설정 */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%); /* 연한 녹색 그라데이션 */
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        /* 메인 컨테이너 (카드 스타일) */
+        .main-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        /* 제목 및 설명 */
+        h1 { 
+            color: #388e3c; /* 짙은 녹색 */
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        /* 업로드 박스 스타일 */
+        .upload-box { 
+            border: 2px dashed #a5d6a7; /* 연한 녹색 점선 */
+            border-radius: 10px;
+            padding: 30px; 
+            margin: 30px 0;
+            background-color: #f9fdfa; /* 아주 연한 배경 */
+        }
+        
+        /* 파일 이름 표시 영역 스타일 */
+        #file-name-display {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #555; /* 파일 이름을 강조색으로 표시 */
+            min-height: 20px; /* 파일이 없을 때 영역이 무너지지 않도록 */
+        }
+
+        /* 파일 선택 input 숨기기 및 커스텀 버튼 */
+        .file-input-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #66bb6a; /* 밝은 녹색 */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .file-input-label:hover {
+            background-color: #43a047;
+        }
+        input[type="file"] {
+            display: none; /* 실제 파일 입력 필드를 숨김 */
+        }
+        
+        /* 분석 시작 버튼 (CTA) */
+        input[type="submit"] { 
+            padding: 12px 30px; 
+            background-color: #2e7d32; /* 진한 녹색 */
+            color: white; 
+            border: none; 
+            border-radius: 5px;
+            cursor: pointer; 
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        input[type="submit"]:hover {
+            background-color: #1b5e20;
+            transform: translateY(-1px);
+        }
+
+        /* 프로젝트 노트 */
+        .note {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-card">
+        <h1>식단 도우미 (DietMate)</h1>
+        <p class="subtitle">YOLOv8 딥러닝 모델을 활용한 음식 인식 및 칼로리 분석 서비스</p>
+        
+        <form method="POST" action="{{ url_for('analyze_image') }}" enctype="multipart/form-data">
+            <div class="upload-box">
+                <input type="file" name="file" id="file-upload" accept="image/*" required>
+                <label for="file-upload" class="file-input-label">분석할 음식 사진 선택</label>
+                <p style="margin-top: 15px; font-size: 0.9em; color: #777;">JPEG, PNG 형식의 이미지 파일을 업로드하세요.</p>
+            </div>
+            
+            <div id="file-name-display">파일을 선택해주세요.</div>
+            
+            <input type="submit" value=" 분석하기">
+        </form>
+        
+    </div>
+    
+    <script>
+        document.getElementById('file-upload').onchange = function() {
+            const fileName = this.files[0] ? this.files[0].name : "파일을 선택해주세요.";
+            document.getElementById('file-name-display').textContent = '첨부 파일: ' + fileName;
+        };
+    </script>
+</body>
+</html>
