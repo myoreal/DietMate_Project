@@ -6,7 +6,6 @@ import uuid  # 고유 파일명 생성을 위한 모듈
 
 # --- YOLOv8 모델 로드 ---
 from ultralytics import YOLO
-# 'yolov8n.pt'는 가장 작고 빠른 모델입니다. (coco 데이터셋으로 학습된 모델)
 MODEL = YOLO('yolov8n.pt') 
 
 # --- 환경 설정 ---
@@ -22,10 +21,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # --- DB 조회 함수 ---
 def get_calorie_info(food_name):
-    """DB에서 음식 이름으로 칼로리 정보를 조회하는 함수"""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    # 대소문자 구분 없이 조회하거나, 모델 클래스 이름과 DB 이름이 정확히 일치해야 함
     cursor.execute("SELECT calorie, unit FROM food_calories WHERE food_name=?", (food_name,))
     result = cursor.fetchone()
     conn.close()
@@ -39,7 +36,6 @@ def get_calorie_info(food_name):
 
 
 # --- 웹 서비스 라우팅 ---
-
 @app.route('/')
 def index():
     """메인 페이지 렌더링"""
@@ -66,10 +62,10 @@ def analyze_image():
         # 2. YOLO 추론 (Prediction)
         # save=True: 탐지 결과를 바운딩 박스와 함께 이미지에 그려서 저장
         # conf=0.25: 탐지 신뢰도 25% 미만은 무시
-        results = MODEL.predict(source=upload_path, save=True, project=RESULT_FOLDER, name=unique_id, exist_ok=True, conf=0.25)
+        results = MODEL.predict(source=upload_path, save=True, project=RESULT_FOLDER, 
+                                name=unique_id, exist_ok=True, conf=0.25)
 
-        # 3. 결과 이미지 경로 설정
-        # YOLO는 저장 시 폴더/이름 규칙을 따릅니다.
+        # 3. 결과 이미지 경로 설정.
         result_dir = os.path.join(RESULT_FOLDER, unique_id)
         result_image_path = os.path.join(result_dir, os.path.basename(upload_path))
         
@@ -80,6 +76,7 @@ def analyze_image():
         total_calorie = 0.0
         food_details = {} # {food_name: {'count': N, 'calorie': C, 'unit': U}}
 
+        
         # YOLOv8 결과 객체에서 탐지된 객체 정보 추출
         for result in results:
             names = result.names # 클래스 ID와 이름 매핑
@@ -106,5 +103,4 @@ def analyze_image():
                                food_details=food_details)
 
 if __name__ == '__main__':
-    # 디버그 모드는 개발 시에만 켜고, 제출 시에는 끄는 것이 좋습니다.
     app.run(debug=True)
